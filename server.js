@@ -34,15 +34,13 @@ app.post('/message', async (req, res) => {
         const options = {
             method: 'POST',
             headers: {Authorization: `Bearer ${process.env.PERPLEXITY_API_KEY}`, 'Content-Type': 'application/json'},
-            body: JSON.stringify({ messages, model:"llama-3.1-sonar-small-128k-online"})
+            body: JSON.stringify({ messages, model:"llama-3.1-sonar-small-128k-online" })
         };
           
-        const response = await fetch('https://api.perplexity.ai/chat/completions', options)
+        await fetch('https://api.perplexity.ai/chat/completions', options)
             .then(response => response.json())
-            .then(response => console.log(response))
+            .then(response => res.json({ response }))
             .catch(err => console.error(err));
-        
-        res.json({ reply: response.choices[0].message });
     } catch (error) {
         console.error(error);
         res.status(500).send(error.message);
