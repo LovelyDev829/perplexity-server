@@ -21,6 +21,7 @@ app.post('/message', async (req, res) => {
             },
             body: JSON.stringify({ prompt: userMessage }),
         });
+        res.json({ response });
 
         if (!response.ok) {
             throw new Error(`Error: ${response.statusText}`);
