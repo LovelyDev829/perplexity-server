@@ -1,12 +1,11 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
-const fetch = require('node-fetch'); // Use fetch for making API calls
+const cors = require('cors'); // Import CORS middleware
 
 const app = express();
 const port = 3003;
 
-app.use(cors());
+app.use(cors()); // Enable CORS for all origins
 app.use(express.json());
 
 // Endpoint to handle chat messages
@@ -14,16 +13,14 @@ app.post('/message', async (req, res) => {
     const userMessage = req.body.message;
 
     try {
-        const response = await fetch('https://api.perplexity.ai/v1/query', { // Adjust the endpoint as necessary
+        const response = await fetch('https://api.perplexity.ai/v1/query', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY}`, // Use your Perplexity API key
+                'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY}`,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ prompt: userMessage }), // Adjust the payload as necessary
+            body: JSON.stringify({ prompt: userMessage }),
         });
-
-        console.log("response", response)
 
         if (!response.ok) {
             throw new Error(`Error: ${response.statusText}`);
@@ -36,11 +33,6 @@ app.post('/message', async (req, res) => {
         console.error(error);
         res.status(500).send(error.message);
     }
-});
-
-// Catch-all route for undefined routes
-app.use((req, res) => {
-    res.status(404).json({ error: 'Not Found' }); // Respond with a JSON error message for 404
 });
 
 // Start the server
